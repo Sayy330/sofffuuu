@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khusus Buat Sofi 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Biar teks ga gampang keblok saat spam klik */
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffc0cb 0%, #ffb6c1 50%, #ff69b4 100%);
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #d81b60;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(216, 27, 96, 0.2);
+            z-index: 10;
+            max-width: 500px;
+            width: 90%;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: absolute;
+            opacity: 0;
+            transform: scale(0.5);
+            pointer-events: none;
+        }
+
+        /* Kelas untuk memunculkan card */
+        .card.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: all;
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            color: #c2185b;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.7);
+        }
+
+        p {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        button {
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            background-color: #f06292;
+            box-shadow: 0 5px 15px rgba(240, 98, 146, 0.4);
+        }
+
+        button:hover {
+            background-color: #e91e63;
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        /* STAGE 1: Slider */
+        input[type=range] {
+            width: 100%;
+            margin: 20px 0;
+            accent-color: #e91e63;
+        }
+        #btn-next-1 { display: none; margin-top: 15px; width: 100%; }
+        #slider-reaction { font-size: 1.5em; margin-top: 10px; min-height: 40px; }
+
+        /* STAGE 2: Tombol Kabur */
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            min-height: 50px;
+        }
+        .btn-no { background-color: #9e9e9e; box-shadow: none; position: relative; }
+
+        /* STAGE 3: Kado Spam Tap */
+        .gift-box {
+            font-size: 5em;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: inline-block;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
+        }
+        .shake { animation: shake 0.3s; }
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg) scale(1.1); }
+            50% { transform: rotate(0deg) scale(1.1); }
+            75% { transform: rotate(15deg) scale(1.1); }
+            100% { transform: rotate(0deg) scale(1.2); }
+        }
+
+        /* STAGE 4: Final */
+        .polaroid {
+            background: white;
+            padding: 15px 15px 25px 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transform: rotate(-4deg);
+            margin: 0 auto 20px auto;
+            border-radius: 8px;
+            width: 80%;
+        }
+        .polaroid img { width: 100%; border-radius: 5px; }
+        .typewriter-text {
+            font-size: 1.1em;
+            color: #880e4f;
+            min-height: 80px;
+            font-weight: 600;
+        }
+        .cursor { animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* ANIMASI UMUM (Hati & Emoji Klik & Balon) */
+        .falling-item {
+            position: absolute;
+            animation: fall linear forwards;
+            z-index: 1;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .click-emoji {
+            position: absolute;
+            pointer-events: none;
+            animation: popOut 0.8s ease-out forwards;
+            z-index: 9999;
+            font-size: 28px;
+        }
+        @keyframes popOut {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            50% { transform: translate(-50%, -100px) scale(1.3); opacity: 1; }
+            100% { transform: translate(-50%, -150px) scale(0); opacity: 0; }
+        }
+
+        /* Floating Message Bubble */
+        .msg-bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            color: #e91e63;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3);
+            cursor: pointer;
+            z-index: 5;
+            animation: floatUp 8s linear forwards;
+            transition: transform 0.1s;
+        }
+        .msg-bubble:hover { transform: scale(1.2); }
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) scale(0.8); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- STAGE 1: Love Meter -->
+    <div class="card active" id="stage1">
+        <h1>Hai, Sofi syngg 🌸</h1>
+        <p>Sebelum mulai, tes dulu yuk...<br>Seberapa sayang atauu kangen kamu sama aku?</p>
+        <input type="range" id="love-slider" min="0" max="100" value="0">
+        <div id="slider-reaction">Geser ke kanan mentok!!!!</div>
+        <button id="btn-next-1">Lanjut!!!!</button>
+    </div>
+
+    <!-- STAGE 2: Tombol Kabur -->
+    <div class="card" id="stage2">
+        <h1>Beneran nih???</h1>
+        <p>Awas aja bohongggg! Coba jawab jujur...<br>Kamu seneng nggak sama aku?</p>
+        <div class="btn-container">
+            <button id="btn-yes">Seneng bangeeet 😍😍😍</button>
+            <button class="btn-no" id="btn-no">Biasa aja 🤬🤬🤬</button>
+        </div>
+    </div>
+
+    <!-- STAGE 3: Unboxing -->
+    <div class="card" id="stage3">
+        <h1>Makasihh bbb</h1>
+        <p id="gift-text">Sekarang, ada kado buat kamu. <br>Coba ketuk kadonya 5 kali!</p>
+        <div class="gift-box" id="gift-box">🎁</div>
+    </div>
+
+    <!-- STAGE 4: Final Surprise -->
+    <div class="card" id="stage4">
+        <div class="polaroid">
+            <!-- Ganti link gambar ini dengan link foto kamu & Sofi -->
+            <img src="WhatsApp Image 2026-08-16 at 11.17.36.jpeg" alt="Us">
+            <div style="font-family: 'Pacifico', cursive; color: #d81b60; margin-top: 10px;">For the best girl 💕</div>
+        </div>
+        <div class="typewriter-text" id="typewriter"></div>
+    </div>
+
+    <script>
+        // --- NAVIGASI STAGE ---
+        function switchStage(hideId, showId) {
+            document.getElementById(hideId).classList.remove('active');
+            setTimeout(() => {
+                document.getElementById(showId).classList.add('active');
+            }, 500); // Tunggu animasi ilang dulu
+        }
+
+        // --- STAGE 1 LOGIC: Slider ---
+        const slider = document.getElementById('love-slider');
+        const reaction = document.getElementById('slider-reaction');
+        const btnNext1 = document.getElementById('btn-next-1');
+
+        slider.addEventListener('input', function() {
+            let val = this.value;
+            if(val < 30) {
+                reaction.innerText = "Kok dikit banget?!";
+                btnNext1.style.display = "none";
+            } else if (val < 70) {
+                reaction.innerText = "Masa cuma segitu? Kurangg!";
+                btnNext1.style.display = "none";
+            } else if (val < 99) {
+                reaction.innerText = "Dikit lagiii mentokkin! 🥺";
+                btnNext1.style.display = "none";
+            } else {
+                reaction.innerHTML = "Nah gitu dong 100%! I love youuu sayaangg!!!!";
+                btnNext1.style.display = "block";
+            }
+        });
+
+        btnNext1.addEventListener('click', () => switchStage('stage1', 'stage2'));
+
+        // --- STAGE 2 LOGIC: Tombol Kabur ---
+        const btnNo = document.getElementById('btn-no');
+        const btnYes = document.getElementById('btn-yes');
+
+        btnNo.addEventListener('mouseover', () => {
+            btnNo.style.position = 'fixed';
+            const maxX = window.innerWidth - btnNo.offsetWidth - 20;
+            const maxY = window.innerHeight - btnNo.offsetHeight - 20;
+            btnNo.style.left = Math.max(20, Math.floor(Math.random() * maxX)) + 'px';
+            btnNo.style.top = Math.max(20, Math.floor(Math.random() * maxY)) + 'px';
+        });
+
+        btnYes.addEventListener('click', () => switchStage('stage2', 'stage3'));
+
+        // --- STAGE 3 LOGIC: Kado Tap Tap ---
+        const giftBox = document.getElementById('gift-box');
+        const giftText = document.getElementById('gift-text');
+        let tapCount = 0;
+
+        giftBox.addEventListener('click', () => {
+            tapCount++;
+            
+            // Efek getar & membesar
+            giftBox.classList.remove('shake');
+            void giftBox.offsetWidth; // trigger reflow biar animasi bisa diulang
+            giftBox.classList.add('shake');
+            giftBox.style.transform = `scale(${1 + (tapCount * 0.1)})`; // Makin diklik makin gede
+
+            if(tapCount === 1) giftText.innerHTML = "Lagi dong! Kurang kenceng ketuknya 😆";
+            if(tapCount === 2) giftText.innerHTML = "3 kali lagi! Ayo buka! 🤭";
+            if(tapCount === 3) giftText.innerHTML = "Dikit lagi kebuka nih! 🤩";
+            if(tapCount === 4) giftText.innerHTML = "1... KALII... LAGIII! 💥";
+            if(tapCount >= 5) {
+                switchStage('stage3', 'stage4');
+                startFinalSurprise();
+            }
+        });
+
+        // --- STAGE 4 LOGIC: Final Surprise ---
+        function startFinalSurprise() {
+            startHeartRain();
+            startFloatingBubbles();
+            typeMessage();
+        }
+
+        // Efek Typewriter (Ngetik Otomatis)
+        const finalMessage = "Makasih yaa udah sabar ngelewatin rintangannya. Aku cuma mau bilang, kamu itu spesial banget buat aku. Jangan lupa senyum hari ini, karena senyum Sofi itu favorit aku! I love you unconditionally! 💖✨";
+        let i = 0;
+        function typeMessage() {
+            if (i < finalMessage.length) {
+                document.getElementById("typewriter").innerHTML = finalMessage.substring(0, i+1) + '<span class="cursor">|</span>';
+                i++;
+                setTimeout(typeMessage, 60); // Kecepatan ngetik (ms)
+            } else {
+                document.getElementById("typewriter").innerHTML = finalMessage; // Ilangin cursor kalau udah selesai
+            }
+        }
+
+        // Hujan Hati
+        function startHeartRain() {
+            const emojis = ['💖', '🌸', '✨', '🎀', '🥰'];
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                heart.classList.add('falling-item');
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+                heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 6000);
+            }, 250);
+        }
+
+        // Efek Muncul Emoji Tiap Layar Diklik
+        document.addEventListener('click', function(e) {
+            if(e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
+            const clickEmojis = ['🦋', '🌸', '✨', '🥺', '💖', '💘'];
+            const emoji = document.createElement('div');
+            emoji.innerText = clickEmojis[Math.floor(Math.random() * clickEmojis.length)];
+            emoji.classList.add('click-emoji');
+            emoji.style.left = e.clientX + 'px';
+            emoji.style.top = e.clientY + 'px';
+            document.body.appendChild(emoji);
+            setTimeout(() => emoji.remove(), 800);
+        });
+
+        // Balon Pujian (Bisa di klik / meletus)
+        function startFloatingBubbles() {
+            const compliments = [
+                "Sofi Cantik!", "Gemesinnn banget", "Bikin Kangen", 
+                "My Favorit Person", "Senyumnya manis!", "Sayang Sofi ❤️"
+            ];
+            
+            setInterval(() => {
+                const bubble = document.createElement('div');
+                bubble.innerText = compliments[Math.floor(Math.random() * compliments.length)];
+                bubble.classList.add('msg-bubble');
+                bubble.style.left = (Math.random() * 80 + 10) + 'vw'; // Jangan terlalu ke pinggir
+                
+                // Kalau balon di klik, meletus ganti emoji
+                bubble.addEventListener('click', function() {
+                    this.innerText = "💥 Puum!";
+                    this.style.background = "#fff";
+                    setTimeout(() => this.remove(), 300);
+                });
+
+                document.body.appendChild(bubble);
+                setTimeout(() => bubble.remove(), 8000);
+            }, 2000); // Munculin balon setiap 2 detik
+        }
+    </script>
+</body>
+</html>
